@@ -265,3 +265,10 @@ visualization:
 ### Detailed Implementation of the Flow
 
 The falsification flow is implemented in [``src/evaluation/run_evaluation.py``](https://github.com/BerkeleyLearnVerify/ScenicRules/blob/main/src/evaluation/run_evaluation.py). The main falsification process is implemented in the `run_evaluation` function.
+
+<!--
+- Scenic program
+- Rules / reaching goal rule
+- Falsifier
+- Getting eval results 
+- Metrics>

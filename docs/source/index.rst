@@ -11,7 +11,9 @@ ScenicRules is an autonomous driving benchmark designed to evaluate systems agai
 - Multi-Objective Specification: Supports the formalization of conflicting driving objectives and explicit priority relations using the `Rulebook <https://arxiv.org/abs/1902.09355>`_ framework.
 - Abstract Scenario Representation: Leverages the `Scenic <https://scenic-lang.org>`_ probabilistic programming language to model driving contexts in an expressive, compact, and interpretable manner.
 
-ScenicRules is designed and implemented by Kevin Kai-Chun Chang, Ekin Beyazit, Alberto Sangiovanni-Vincentelli, Tichakorn Wongpiromsarn, and Sanjit A. Seshia. See `our paper <https://www.arxiv.org/abs/2602.16073>`_ for more details.
+ScenicRules is designed and implemented by Kevin Kai-Chun Chang, Ekin Beyazit, Alberto Sangiovanni-Vincentelli, Tichakorn Wongpiromsarn, and Sanjit A. Seshia. 
+See `our paper <https://www.arxiv.org/abs/2602.16073>`_ for more details.
+If you have any questions or suggestions, please feel free to open an issue on `our GitHub repository <https://github.com/BerkeleyLearnVerify/ScenicRules>`_.
 
 Table of Contents
 =======================================
