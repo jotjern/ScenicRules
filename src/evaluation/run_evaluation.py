@@ -8,6 +8,7 @@ from pathlib import Path
 import hydra
 import scenic
 import timeout_decorator
+from scenic.syntax import veneer as _veneer
 from verifai.features import Categorical, Feature, FeatureSpace, Struct
 from verifai.samplers import *
 
@@ -63,6 +64,23 @@ f16 = Rule(reaching_goal, min, "reaching_goal", 16)
 
 ROOT = Path(__file__).parent
 log = logging.getLogger(__name__)
+
+# On macOS the default multiprocessing start method is "spawn", which
+# requires pickling every argument.  The MetaDrive simulator carries
+# unpicklable lambdas from the Scenic model, so use_signals=False
+# (which relies on multiprocessing) fails.  On Linux the default is
+# "fork" and pickling is not needed, so the original path works fine.
+_USE_SIGNALS = sys.platform == "darwin"
+
+
+def _reset_veneer():
+    """Force-reset Scenic's veneer global state so scenarioFromFile can be called again."""
+    while _veneer.activity > 0:
+        _veneer.activity -= 1
+        if _veneer.scenarioStack:
+            _veneer.scenarioStack.pop()
+    _veneer.lockedParameters = frozenset()
+    _veneer.lockedModel = None
 
 
 @hydra.main(config_path=str(ROOT / "cfgs"), version_base=None)
@@ -155,7 +173,7 @@ def run_evaluation(cfg, seed):
             decorator = timeout_decorator.timeout(
                 cfg["scenic"]["timeout"],
                 timeout_exception=TimeoutError,
-                use_signals=False,
+                use_signals=_USE_SIGNALS,
             )
             error_value, normalized_error_value, violated_rules = decorator(
                 simulate_and_eval
@@ -164,10 +182,12 @@ def run_evaluation(cfg, seed):
             log.warning(
                 f"Simulation timeout after {cfg['scenic']['timeout']}s. Retrying..."
             )
+            _reset_veneer()
             retries += 1
             continue
         except Exception as e:
             log.error(f"Simulation failed with exception: {e}")
+            _reset_veneer()
             retries += 1
             continue
         log.info(
